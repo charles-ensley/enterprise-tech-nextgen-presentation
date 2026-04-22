@@ -18,6 +18,7 @@ A **public, no-build** pattern for “next-gen” enterprise presales: one HTML 
 2. Edit `:root` CSS variables for **your** brand (one accent for the primary CTA).
 3. Match each nav link to a `section#id`.
 4. Open the file in a browser—no `npm install`.
+5. Use **Edit text** (bottom-right) to change copy in the page, then **Download HTML** to save a new file, or edit the `.html` in Cursor/VS Code for version control.
 
 ## Design intent
 
@@ -27,7 +28,7 @@ A **public, no-build** pattern for “next-gen” enterprise presales: one HTML 
 
 ## Optional: Salesforce EHT narrative skills
 
-If you use the **Salesforce enterprise high tech** presales skills (landing page IA, Agentforce blueprints, value framing), you can keep storyline and this HTML layer aligned—see links in [PRESENTATION-FRAMEWORK.md §11](PRESENTATION-FRAMEWORK.md#11-optional-cursor--salesforce-eht-narrative-skills).
+If you use the **Salesforce enterprise high tech** presales skills (landing page IA, Agentforce blueprints, value framing), you can keep storyline and this HTML layer aligned—see links in [PRESENTATION-FRAMEWORK.md §12](PRESENTATION-FRAMEWORK.md#12-optional-cursor--salesforce-eht-narrative-skills).
 
 ## License
 

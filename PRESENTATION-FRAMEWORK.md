@@ -155,7 +155,21 @@ A single IIFE or module script at bottom:
 
 ---
 
-## 11. Optional: Cursor + Salesforce EHT narrative skills
+## 11. In-browser text editing (Edit text / Download HTML)
+
+The starter includes a **floating bar** (bottom-right) with:
+
+- **Edit text** — toggles `body.is-deck-editing`, applies `contenteditable="true"` to safe copy blocks (headings, paragraphs, cards, nav brand, footer line; **not** Mermaid `pre`, scripts, or canvas). Nested targets are deduped so you don’t get double editors (outer card wins over inner `p`).
+- **Done** — turns editing off and removes `contenteditable`.
+- **Download HTML** — serializes the **current** DOM (including your edits) to a `.html` file. Open that file in a browser to keep iterating; or paste back into your editor for source control.
+
+**Keyboard:** While focused in an editable region, slide hotkeys (e.g. arrow keys) are disabled so you can move the text cursor normally.
+
+**Selector list:** Extend the `SEL` string in the second `<script>` block if you add new component classes and want them editable.
+
+---
+
+## 12. Optional: Cursor + Salesforce EHT narrative skills
 
 If you use a repo that includes **`.cursor/skills/sf-ent-hitech-*`** (for example the [sf-gps enterprise high tech agentic engineering](https://github.com/charles-ensley/sf-gps-enterprise-hitech-agentic-engineering) materials), these skills complement this HTML (storyline and IA, not the CSS itself):
 
@@ -167,7 +181,7 @@ This standalone repo does **not** require those files; the deck works as plain H
 
 ---
 
-## 12. Checklist before sharing externally
+## 13. Checklist before sharing externally
 
 - [ ] No real account name, logo, or confidential metrics in shared templates.
 - [ ] Replace placeholder tokens with approved customer brand colors.

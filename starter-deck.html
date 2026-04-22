@@ -142,6 +142,33 @@
 
     .particle-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
     @media (prefers-reduced-motion: reduce) { .sparkle-field, .particle-canvas { display: none !important; } }
+
+    .deck-edit-bar {
+      position: fixed; bottom: 20px; right: 20px; z-index: 2000;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px; max-width: min(100vw - 32px, 420px);
+      padding: 10px 12px; border-radius: 8px; justify-content: flex-end;
+      background: rgba(10, 22, 40, 0.94);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    }
+    .deck-edit-bar .deck-edit-hint {
+      flex: 1 1 100%; font-size: 0.7rem; color: rgba(255, 255, 255, 0.6); margin: 0 0 2px; line-height: 1.35; display: none;
+    }
+    body.is-deck-editing .deck-edit-bar .deck-edit-hint { display: block; }
+    .deck-edit-bar .deck-btn {
+      font-family: inherit; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+      padding: 8px 12px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.1); color: #fff; cursor: pointer;
+    }
+    .deck-edit-bar .deck-btn:hover { background: rgba(255, 255, 255, 0.16); }
+    .deck-edit-bar .deck-btn--accent { background: var(--eht-accent); border-color: transparent; color: #fff; }
+    .deck-edit-bar .deck-btn--accent:hover { filter: brightness(1.08); }
+    body.is-deck-editing [data-deck-edited] {
+      cursor: text;
+      outline: 1px dashed rgba(96, 165, 250, 0.5);
+      outline-offset: 3px;
+    }
   </style>
 </head>
 <body>
@@ -232,6 +259,13 @@
       </div>
     </section>
   </div>
+
+  <div class="deck-edit-bar" id="deckEditBar" role="region" aria-label="Edit presentation text">
+    <p class="deck-edit-hint" id="deckEditHint">Text mode: click any highlighted text to change it. Download HTML saves a new file (open it to keep editing in the browser), or use your code editor to edit the source on disk.</p>
+    <button type="button" class="deck-btn deck-btn--accent" id="deckEditToggle" aria-pressed="false">Edit text</button>
+    <button type="button" class="deck-btn" id="deckDownloadHtml" title="Save a copy of this page with your text changes">Download HTML</button>
+  </div>
+
   <script>
   (function () {
     const slides = document.querySelectorAll('[data-slide]');
@@ -304,6 +338,70 @@
         requestAnimationFrame(loop);
       }
       requestAnimationFrame(loop);
+    }
+  })();
+  </script>
+  <script>
+  (function () {
+    var body = document.body;
+    var btnToggle = document.getElementById('deckEditToggle');
+    var btnDown = document.getElementById('deckDownloadHtml');
+    var editNodes = [];
+    var SEL =
+      '#main.deck h1, #main.deck h2, #main.deck h3, #main.deck h4, #main.deck p, #main.deck li, #main.deck td, #main.deck th, ' +
+      '#main.deck .slide-eyebrow, #main.deck .section-h2, #main.deck .section-lede, #main.deck .slide-title, #main.deck .slide-lede, ' +
+      '#main.deck .punch-card, #main.deck .value-tile, #main.deck .step, #main.deck .principle-mini, #main.deck .chain-box, ' +
+      '#main.deck .shift-today, #main.deck .shift-next, #main.deck .cost-inaction, #main.deck .cta-step, ' +
+      '#main.deck .section-divider, #main.deck .stat-chip, #main.deck .swot-details, ' +
+      '#main.deck .appendix summary, #main.deck .appendix .appendix-body, ' +
+      '#main.deck a.btn-primary, ' +
+      'footer p, .deck-nav .deck-brand';
+    function collectEditable() {
+      var raw = document.querySelectorAll(SEL);
+      var all = Array.prototype.filter.call(raw, function (el) {
+        if (el.closest('pre') || el.classList.contains('mermaid')) return false;
+        if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE' || el.tagName === 'SVG' || el.tagName === 'CANVAS') return false;
+        if (el.closest && el.closest('.mermaid-wrap')) return false;
+        return true;
+      });
+      return all.filter(function (n) {
+        return !all.some(function (m) {
+          return m !== n && m.contains && m.contains(n);
+        });
+      });
+    }
+    function setEditing(on) {
+      if (on) {
+        body.classList.add('is-deck-editing');
+        if (btnToggle) { btnToggle.textContent = 'Done'; btnToggle.setAttribute('aria-pressed', 'true'); }
+        editNodes = collectEditable();
+        editNodes.forEach(function (el) {
+          el.setAttribute('contenteditable', 'true');
+          el.setAttribute('data-deck-edited', '');
+        });
+      } else {
+        body.classList.remove('is-deck-editing');
+        if (btnToggle) { btnToggle.textContent = 'Edit text'; btnToggle.setAttribute('aria-pressed', 'false'); }
+        editNodes.forEach(function (el) {
+          el.removeAttribute('contenteditable');
+          el.removeAttribute('data-deck-edited');
+        });
+        editNodes = [];
+      }
+    }
+    if (btnToggle) btnToggle.addEventListener('click', function () { setEditing(!body.classList.contains('is-deck-editing')); });
+    if (btnDown) {
+      btnDown.addEventListener('click', function () {
+        var t = (document.querySelector('title') && document.querySelector('title').textContent) || 'presentation';
+        t = t.replace(/[^\w\-]+/g, '-').replace(/^-+|-+$/g, '') || 'presentation';
+        var html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = t + '-edited.html';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
     }
   })();
   </script>

@@ -30,4 +30,4 @@ You are building a static **scroll-snap presentation** (one HTML file, no framew
 
 ## Optional narrative skills (Salesforce EHT)
 
-For **storyline** (not code), teams sometimes pair this HTML with `sf-ent-hitech-landing-page` and `sf-ent-hitech-agentforce-solution-blueprint` in a separate Cursor skills bundle—see [PRESENTATION-FRAMEWORK.md §11](PRESENTATION-FRAMEWORK.md#11-optional-cursor--salesforce-eht-narrative-skills).
+For **storyline** (not code), teams sometimes pair this HTML with `sf-ent-hitech-landing-page` and `sf-ent-hitech-agentforce-solution-blueprint` in a separate Cursor skills bundle—see [PRESENTATION-FRAMEWORK.md §12](PRESENTATION-FRAMEWORK.md#12-optional-cursor--salesforce-eht-narrative-skills).
